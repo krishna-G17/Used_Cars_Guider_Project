@@ -1,0 +1,17 @@
+numpy 
+pandas
+seaborn
+matplotlib
+scikit-learn
+catboost
+xgboost
+dill
+flask
+selenium
+pyodbc
+datetime
+sqlalchemy
+requests
+geopandas
+uszipcode
+#-e .
