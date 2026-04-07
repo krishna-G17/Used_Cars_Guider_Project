@@ -1,17 +1,16 @@
-numpy 
+numpy
 pandas
-seaborn
-matplotlib
 scikit-learn
 catboost
 xgboost
 dill
 flask
-selenium
+flask-cors
+python-dotenv
 pyodbc
-datetime
 sqlalchemy
 requests
+openpyxl
+selenium
 geopandas
 uszipcode
-#-e .
