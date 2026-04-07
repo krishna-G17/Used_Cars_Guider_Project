@@ -1,0 +1,260 @@
+/* ============================================================
+   UCPP — Used Car Purchase Planner  |  Main Stylesheet
+   ============================================================ */
+
+:root {
+  --bg:        #0f1117;
+  --surface:   #1a1d27;
+  --surface2:  #222636;
+  --border:    #2e3347;
+  --accent:    #4f8ef7;
+  --accent2:   #7c5cbf;
+  --text:      #e2e6f0;
+  --muted:     #7a8299;
+  --green:     #2ecf82;
+  --yellow:    #f5c842;
+  --red:       #f25c5c;
+  --radius:    10px;
+  --shadow:    0 4px 20px rgba(0,0,0,.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+header .logo { font-size: 22px; font-weight: 700; letter-spacing: -.5px; }
+header .logo span { color: var(--accent); }
+header .tagline { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+/* ── Search bar ── */
+.search-section {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 32px;
+}
+.search-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.search-grid .field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 130px; }
+.search-grid label  { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.search-grid input,
+.search-grid select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  transition: border .2s;
+}
+.search-grid input:focus,
+.search-grid select:focus { border-color: var(--accent); }
+.search-grid select option { background: var(--surface2); }
+
+#btn-search {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 11px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s;
+  white-space: nowrap;
+}
+#btn-search:hover { opacity: .85; }
+#btn-search:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Main content ── */
+main { max-width: 1200px; margin: 0 auto; padding: 28px 24px; }
+
+/* ── Error / loading banner ── */
+#status-banner {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--muted);
+}
+#status-banner.error { border-color: var(--red); color: var(--red); }
+
+/* ── KPI cards ── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+.kpi-card .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.kpi-card .kpi-value { font-size: 26px; font-weight: 700; color: var(--accent); }
+.kpi-card .kpi-sub   { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ── Chart grid ── */
+.chart-row {
+  display: grid;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.chart-row.two   { grid-template-columns: 1fr 1fr; }
+.chart-row.three { grid-template-columns: 2fr 1fr; }
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.chart-card h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 16px;
+}
+.chart-card canvas { max-height: 280px; }
+
+/* ── Word cloud container ── */
+#wc-container {
+  width: 100%;
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#wc-empty { font-size: 13px; color: var(--muted); }
+
+/* ── Price prediction card ── */
+.predict-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.predict-card h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 14px;
+}
+.predict-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.predict-row .field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 120px; }
+.predict-row label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.predict-row input,
+.predict-row select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+}
+#btn-predict {
+  background: var(--accent2);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 11px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+#btn-predict:hover { opacity: .85; }
+#predict-result {
+  margin-top: 14px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--green);
+}
+
+/* ── Similar cars grid ── */
+.similar-section h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+.similar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+}
+.sim-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: border-color .2s;
+}
+.sim-card:hover { border-color: var(--accent); }
+.sim-card .sim-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.sim-card .sim-price { font-size: 20px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+.sim-card .sim-meta  { font-size: 12px; color: var(--muted); line-height: 1.7; }
+.sim-card .sim-link  { display: inline-block; margin-top: 10px; font-size: 12px; color: var(--accent); text-decoration: none; }
+.sim-card .sim-link:hover { text-decoration: underline; }
+
+/* ── Listings table ── */
+.listings-section { margin-bottom: 32px; }
+.listings-section h2 { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
+.table-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+thead { background: var(--surface2); }
+th, td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: .4px; }
+tbody tr:hover { background: var(--surface2); }
+td a { color: var(--accent); text-decoration: none; }
+td a:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  header { padding: 14px 16px; }
+  .search-section { padding: 16px; }
+  main { padding: 20px 14px; }
+  .chart-row.two, .chart-row.three { grid-template-columns: 1fr; }
+}

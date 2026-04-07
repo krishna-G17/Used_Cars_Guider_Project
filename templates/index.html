@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UCPP — Used Car Purchase Planner</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <!-- wordcloud2.js -->
+  <script src="https://cdn.jsdelivr.net/npm/wordcloud@1.2.2/src/wordcloud2.js"></script>
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ HEADER ═══════════ -->
+<header>
+  <div class="logo">UC<span>PP</span></div>
+  <div style="font-size:14px;font-weight:600;color:#e2e6f0">Used Car Purchase Planner</div>
+  <div class="tagline">Powered by Craigslist data &amp; NHTSA complaints (1995–2023)</div>
+</header>
+
+<!-- ═══════════════════════════════════════════ SEARCH ══════════ -->
+<section class="search-section">
+  <div class="search-grid">
+    <div class="field">
+      <label for="f-manufacturer">Manufacturer</label>
+      <input id="f-manufacturer" type="text" placeholder="e.g. Toyota" />
+    </div>
+    <div class="field">
+      <label for="f-model">Model</label>
+      <input id="f-model" type="text" placeholder="e.g. Camry" />
+    </div>
+    <div class="field">
+      <label for="f-year">Year</label>
+      <input id="f-year" type="number" placeholder="e.g. 2018" min="1990" max="2025" />
+    </div>
+    <div class="field">
+      <label for="f-state">State</label>
+      <select id="f-state">
+        <option value="">All states</option>
+        <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+        <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+        <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+        <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+        <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+        <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+        <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+        <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+        <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+        <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+        <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+        <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+        <option>WI</option><option>WY</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="f-city">City</label>
+      <input id="f-city" type="text" placeholder="e.g. Dallas" />
+    </div>
+    <button id="btn-search">Search</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ MAIN ════════════ -->
+<main>
+
+  <!-- Status / error banner -->
+  <div id="status-banner"></div>
+
+  <!-- ── KPI Cards ── -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Avg Listed Price</div>
+      <div class="kpi-value" id="kpi-avg-value">—</div>
+      <div class="kpi-sub"  id="kpi-avg-sub">run a search</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Lowest Price</div>
+      <div class="kpi-value" id="kpi-min-value">—</div>
+      <div class="kpi-sub"  id="kpi-min-sub"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Highest Price</div>
+      <div class="kpi-value" id="kpi-max-value">—</div>
+      <div class="kpi-sub"  id="kpi-max-sub"></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Avg Odometer</div>
+      <div class="kpi-value" id="kpi-odo-value">—</div>
+      <div class="kpi-sub"  id="kpi-odo-sub"></div>
+    </div>
+  </div>
+
+  <!-- ── Row 1: Regional frequency + Condition vs Price ── -->
+  <div class="chart-row two">
+    <div class="chart-card">
+      <h3>Regional Listing Frequency (Top 15 States)</h3>
+      <canvas id="chart-freq"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Avg Price by Title / Condition</h3>
+      <canvas id="chart-cond"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Row 2: Price trend / depreciation ── -->
+  <div class="chart-row">
+    <div class="chart-card">
+      <h3>Price Trend &amp; Depreciation by Model Year</h3>
+      <canvas id="chart-trend"></canvas>
+    </div>
+  </div>
+
+  <!-- ── Row 3: NHTSA Radar + Word Cloud ── -->
+  <div class="chart-row two">
+    <div class="chart-card">
+      <h3>NHTSA Complaint Radar (by Component)</h3>
+      <canvas id="chart-radar"></canvas>
+      <div id="radar-total" style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center"></div>
+    </div>
+    <div class="chart-card">
+      <h3>Top NHTSA Complaint Keywords</h3>
+      <div id="wc-container">
+        <span id="wc-empty">Search for a make/model to see complaint keywords</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Price Prediction ── -->
+  <div class="predict-card">
+    <h3>ML Price Prediction</h3>
+    <div class="predict-row">
+      <div class="field">
+        <label for="p-odometer">Odometer (mi)</label>
+        <input id="p-odometer" type="number" placeholder="e.g. 75000" />
+      </div>
+      <div class="field">
+        <label for="p-transmission">Transmission</label>
+        <select id="p-transmission">
+          <option value="">Any</option>
+          <option>automatic</option>
+          <option>manual</option>
+          <option>other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-cylinders">Cylinders</label>
+        <select id="p-cylinders">
+          <option value="">Any</option>
+          <option>4 cylinders</option>
+          <option>6 cylinders</option>
+          <option>8 cylinders</option>
+          <option>other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-drive">Drive</label>
+        <select id="p-drive">
+          <option value="">Any</option>
+          <option>fwd</option>
+          <option>rwd</option>
+          <option>4wd</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-fuel">Fuel</label>
+        <select id="p-fuel">
+          <option value="">Any</option>
+          <option>gas</option>
+          <option>diesel</option>
+          <option>hybrid</option>
+          <option>electric</option>
+          <option>other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-title-status">Title Status</label>
+        <select id="p-title-status">
+          <option value="clean">Clean</option>
+          <option value="rebuilt">Rebuilt</option>
+          <option value="salvage">Salvage</option>
+          <option value="lien">Lien</option>
+          <option value="missing">Missing</option>
+          <option value="parts only">Parts Only</option>
+        </select>
+      </div>
+      <button id="btn-predict">Predict Price</button>
+    </div>
+    <div id="predict-result"></div>
+  </div>
+
+  <!-- ── Listings table ── -->
+  <div class="listings-section">
+    <h2>Listings (up to 50)</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Price</th>
+            <th>Odometer</th>
+            <th>Location</th>
+            <th>Title</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody id="listings-body">
+          <tr>
+            <td colspan="8" style="color:var(--muted);text-align:center;padding:20px">
+              Enter a search above to load listings
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Similar cars ── -->
+  <div class="similar-section">
+    <h2>Similar Listings You Might Consider</h2>
+    <div class="similar-grid" id="similar-grid">
+      <p style="color:var(--muted);font-size:13px">Run a search to see recommendations.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- App JS -->
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>
