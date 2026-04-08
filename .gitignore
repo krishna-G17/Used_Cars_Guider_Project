@@ -160,6 +160,11 @@ cython_debug/
 #.idea/
 
 # UCPP — project-specific exclusions
+
+# Credential / API key files — NEVER commit these
+credentials.json
+kaggle.json
+secrets.json
 ucppvenv/
 artifacts/
 
