@@ -332,6 +332,21 @@ def predict_price():
 
 
 # ---------------------------------------------------------------------------
+# NHTSA cache reload (call after adding new Excel files to Complaints_Data/)
+# ---------------------------------------------------------------------------
+
+@app.route('/api/nhtsa-reload', methods=['GET'])
+def nhtsa_reload():
+    """Bust the in-memory NHTSA cache so new Excel files are picked up."""
+    try:
+        from src.nhtsa import _load_all
+        _load_all.cache_clear()
+        return jsonify({"status": "ok", "message": "NHTSA cache cleared. Next query will reload all files."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
